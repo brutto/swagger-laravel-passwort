@@ -1,0 +1,199 @@
+swagger: '2.0'
+info:
+  version: '0.0.1'
+  title: 'Laravel passport helper'
+  description: 'Для правильной генерации методов клиента'
+  
+# Added by API Auto Mocking Plugin
+#host: virtserver.swaggerhub.com
+basePath: /brutto/laravel-passport/0.0.1
+schemes:
+ - https
+# Added by API Auto Mocking Plugin
+host: virtserver.swaggerhub.com
+
+paths:
+  /oauth/clients:
+    get:
+      summary: Просмотр всех клиентов
+      tags: 
+        - clients
+      operationId: showClients
+      responses:
+        200:
+          description: Список клиентов
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ClientModel'          
+        default:
+          description: Ошибки
+          schema: 
+            $ref: '#/definitions/ErrorModel'
+    post:
+      summary: Добавление клиента
+      tags: 
+        - clients
+      operationId: clientCreate
+      parameters:
+        - in: body
+          name: clientForm
+          description: Форма добавления клиента
+          schema:
+            $ref: '#/definitions/ClientForm'        
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/ClientModel'
+        default:
+          description: Ошибки
+          schema: 
+            $ref: '#/definitions/ErrorModel'
+  
+  /oauth/clients/{clientId}:
+    put:
+      summary: Обновление клиента
+      tags: 
+        - clients
+      operationId: clientUpdate        
+      parameters:
+        - in: path
+          name: clientId
+          required: true
+          type: integer
+          minimum: 1
+          description: The ID of the client     
+        - in: body
+          name: clientForm
+          description: Форма добавления клиента
+          schema:
+            $ref: '#/definitions/ClientForm'
+      responses:
+        200:
+          description: Список клиентов
+          schema:
+            $ref: '#/definitions/ClientModel'
+        default:
+          description: Ошибки
+          schema: 
+            $ref: '#/definitions/ErrorModel'           
+          
+    delete:
+      summary: Удаление клиента
+      tags: 
+        - clients
+      operationId: clientDelete        
+      parameters:
+        - in: path
+          name: clientId
+          required: true
+          type: integer
+          minimum: 1
+          description: The ID of the client         
+      responses:
+        200:
+          description: Ок
+#          schema:
+#            $ref: '#/definitions/ResultModel'
+        default:
+          description: Ошибки
+          schema: 
+            $ref: '#/definitions/ErrorModel'           
+    
+definitions:
+  
+  ClientModel:
+    description: Модель клиента
+    required: 
+      - name
+      - redirect
+    properties:
+      id:
+        type: integer
+        readOnly: true
+        description: Уникальный идентификатор клиента
+        example: 1
+      secret:
+        type: string
+        readOnly: true
+        description: Секретный ключ
+        example: bmjP69WJgpzQeNnKI59VtxpFPRnTGpZcIzChA0oP
+      revoked:
+        type: boolean
+        readOnly: true
+        description: Флаг удалённости
+        example: false
+      name:
+        type: string
+        description: Название клиента
+        example: My Awesome App 
+      redirect:
+        type: string
+        description: callback URI клиента
+        example: http://localhost
+      personal_access_client:
+        type: boolean
+        readOnly: true
+        description: Is personal access allowed
+        example: false
+      password_client:
+        type: boolean
+        readOnly: true
+        description: Is password grant allowed
+        example: false
+      user_id:
+        type: integer
+        readOnly: true
+        description: User client belong to
+        example: 32
+    
+        
+  ClientForm:
+    description: Форма для добавления клиента
+    required:
+      - name
+      - redirect
+    properties:
+      name:
+        type: string
+        description: Название клиента
+        example: My Awesome App 
+      redirect:
+        type: string
+        description: callback URI клиента
+        example: http://localhost
+      type:
+        type: string
+        description: Тип клиента
+        enum: 
+          - password
+          - personal
+          - common
+        example: common
+          
+  ErrorModel:
+    description: Возвращаемые ошибки
+    properties:
+      error: 
+        type: string
+        readOnly: true
+        description: Тип ошибки
+      message:
+        type: string
+        readOnly: true
+        description: Расшифровка что произошло
+      hint:
+        type: object
+        readOnly: true
+        description: Дополнительные данные (trace, ошибки формы etc)
+        
+  ResultModel:
+    description: Результат выполнения
+    required: 
+      - ok
+    properties:
+      ok:
+        type: boolean
+        example: true 
+      
